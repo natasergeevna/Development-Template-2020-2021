@@ -49,7 +49,7 @@ public:
         prev->next = f;
     }
     
-    bool hasLoop1()
+    bool hasLoop1()  //2й двигаем 2 раза 1й один
     {
         if(first == nullptr)
             return false;
@@ -69,7 +69,7 @@ public:
         }
     }
     
-    bool hasLoop2()
+    bool hasLoop2() //1й двигается на 1,2,3.. элемента
     {
         if(first == nullptr)
             return false;
@@ -77,18 +77,60 @@ public:
         Node *p = first;
         while(true)
         {
-            Node *tmp = p;
+            Node *p1 = p;
             for(int j = 0; j < i; j++)
             {
-                tmp = tmp->next;
-                if(tmp == nullptr)
+                p1 = p1->next;
+                if(p1 == nullptr)
                     return false;
             }
-            if(p == tmp)
+            if(p == p1)
                 return true;
-            p = tmp;
+            p = p1;
             i++;
         }
+    }
+    
+    bool hasLoop3()  //изменение направления указателей
+    {
+        Node *p = nullptr;
+        Node *pcurr = nullptr;
+        Node *pnext = nullptr;
+        bool isloop = false;
+        if (first == nullptr)
+            return false;
+        if (first->next == nullptr)
+            return false;
+        pcurr = first;
+        pnext = first->next;
+        while(true)
+        {
+            pcurr->next = p;
+            if (pnext == nullptr)
+            {
+                if (pcurr == first)
+                {
+                    isloop = true;
+                }
+                Node *tmp = pnext;
+                pnext = p;
+                p = tmp;
+                break;
+            }
+            p = pcurr;
+            pcurr = pnext;
+            pnext = pnext->next;
+        }
+        while(true)
+        {
+            pcurr->next = p;
+            if (pnext == nullptr)
+                break;
+            p = pcurr;
+            pcurr = pnext;
+            pnext = pnext->next;
+        }
+        return isloop;
     }
 };
 
@@ -101,8 +143,13 @@ int main()
     l.print();
     cout << "First Loop check w/o cycle: " << l.hasLoop1() << endl;
     cout << "Second Loop check w/o cycle: " << l.hasLoop2() << endl;
+    cout << "Third Loop check w/o cycle: " << l.hasLoop3() << endl;
     l.addcycle(5);
     cout << "First Loop check w/ cycle: " << l.hasLoop1() << endl;
     cout << "Second Loop check w/ cycle: " << l.hasLoop2() << endl;
+    cout << "Third Loop check w/ cycle: " << l.hasLoop3() << endl;
+    for(int i = 0; i < 5; i++)
+        l.add(i+1);
+    l.print();
     return 0;
 }
